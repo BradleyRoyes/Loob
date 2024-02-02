@@ -1,48 +1,45 @@
-// speech-recognition.d.ts in your lib directory
+// lib/speech-recognition.d.ts
 
-interface SpeechRecognitionErrorEvent extends Event {
-  error: string;
-  message: string;
+declare global {
+  interface Window {
+    SpeechRecognition: typeof SpeechRecognition;
+    webkitSpeechRecognition: typeof SpeechRecognition;
+  }
+
+  interface SpeechRecognition extends EventTarget {
+    new(): SpeechRecognition;
+    start(): void;
+    stop(): void;
+    continuous: boolean; // Added continuous property
+    onerror: (event: SpeechRecognitionErrorEvent) => void;
+    onresult: (event: SpeechRecognitionEvent) => void;
+    onstart: () => void;
+    onend: () => void;
+    // Add other properties and event handlers as needed
+  }
+
+  interface SpeechRecognitionErrorEvent extends Event {
+    error: string;
+    message: string;
+  }
+
+  interface SpeechRecognitionEvent extends Event {
+    results: SpeechRecognitionResultList;
+    resultIndex: number;
+  }
+
+  // Add other interfaces as needed
 }
 
-interface SpeechRecognitionEvent extends Event {
-  results: SpeechRecognitionResultList;
-  resultIndex: number;
-}
-
-interface SpeechRecognitionResultList {
-  readonly length: number;
-  item(index: number): SpeechRecognitionResult;
-}
-
-interface SpeechRecognitionResult {
-  readonly isFinal: boolean;
-  readonly length: number;
-  item(index: number): SpeechRecognitionAlternative;
-}
-
-interface SpeechRecognitionAlternative {
-  readonly transcript: string;
-  readonly confidence: number;
-}
-
+// Extend the Window interface for vendor prefixes
 declare var SpeechRecognition: {
-  new (): SpeechRecognition;
   prototype: SpeechRecognition;
+  new(): SpeechRecognition;
 };
 
-interface SpeechRecognition extends EventTarget {
-  start(): void;
-  stop(): void;
-  onerror: (event: SpeechRecognitionErrorEvent) => void;
-  onresult: (event: SpeechRecognitionEvent) => void;
-  onstart: () => void; // Ensure this is included
-  onend: () => void; // Add any other event handlers you use
-  // Add more properties and methods as needed
-}
+declare var webkitSpeechRecognition: {
+  prototype: SpeechRecognition;
+  new(): SpeechRecognition;
+};
 
-// Add this to handle vendor prefixes
-interface Window {
-  SpeechRecognition: typeof SpeechRecognition;
-  webkitSpeechRecognition: typeof SpeechRecognition;
-}
+export {};

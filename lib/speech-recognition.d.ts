@@ -1,5 +1,5 @@
 // speech-recognition.d.ts in your lib directory
-
+ 
 interface SpeechRecognitionErrorEvent extends Event {
   error: string;
   message: string;

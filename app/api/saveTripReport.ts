@@ -2,16 +2,10 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { Pool } from 'pg';
 
-// Use environment variables for PostgreSQL connection
 const pool = new Pool({
-  user: process.env.POSTGRES_USER,
-  password: process.env.POSTGRES_PASSWORD,
-  host: process.env.POSTGRES_HOST,
-  database: process.env.POSTGRES_DATABASE,
-  port: parseInt(process.env.POSTGRES_PORT || '5432', 10), // Default PostgreSQL port is 5432
-  connectionString: process.env.POSTGRES_URL, // Using the URL directly is also an option
+  connectionString: process.env.POSTGRES_URL,
   ssl: {
-    rejectUnauthorized: false, // Note: For production, consider configuring SSL properly.
+    rejectUnauthorized: false,
   },
 });
 
@@ -35,7 +29,7 @@ export default async function handler(
 
       res.status(200).json({ id: response.rows[0].id, message: "Trip report saved successfully" });
     } catch (err) {
-      console.error('Database operation failed:', err);
+      console.error(err);
       res.status(500).json({ error: "Failed to save trip report" });
     }
   } else {

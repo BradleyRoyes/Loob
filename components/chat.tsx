@@ -1,28 +1,30 @@
+// Assuming 'use client' is part of your environment setup or comments
 'use client'
 
-import { useChat, type Message } from 'ai/react'
-
-import { cn } from '@/lib/utils'
-import { ChatList } from '@/components/chat-list'
-import { ChatPanel } from '@/components/chat-panel'
-import { EmptyScreen } from '@/components/empty-screen'
-import { ChatScrollAnchor } from '@/components/chat-scroll-anchor'
+import { useState } from 'react'
+import { toast } from 'react-hot-toast'
+import { usePathname, useRouter } from 'next/navigation'
 import { useLocalStorage } from '@/lib/hooks/use-local-storage'
+import { useChat, type Message } from 'ai/react'
+import { cn } from '@/lib/utils'
+import ChatList from '@/components/chat-list'
+import ChatPanel from '@/components/chat-panel'
+import EmptyScreen from '@/components/empty-screen'
+import ChatScrollAnchor from '@/components/chat-scroll-anchor'
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogFooter,
   DialogHeader,
-  DialogTitle
+  DialogTitle,
 } from '@/components/ui/dialog'
-import { useState } from 'react'
 import { Button } from './ui/button'
 import { Input } from './ui/input'
-import { toast } from 'react-hot-toast'
-import { usePathname, useRouter } from 'next/navigation'
+import VoiceInput from './ui/VoiceInput'; // Adjust the path as necessary
 
 const IS_PREVIEW = process.env.VERCEL_ENV === 'preview'
+
 export interface ChatProps extends React.ComponentProps<'div'> {
   initialMessages?: Message[]
   id?: string
@@ -31,33 +33,46 @@ export interface ChatProps extends React.ComponentProps<'div'> {
 export function Chat({ id, initialMessages, className }: ChatProps) {
   const router = useRouter()
   const path = usePathname()
-  const [previewToken, setPreviewToken] = useLocalStorage<string | null>(
-    'ai-token',
-    null
-  )
+  const [previewToken, setPreviewToken] = useLocalStorage<string | null>('ai-token', null)
   const [previewTokenDialog, setPreviewTokenDialog] = useState(IS_PREVIEW)
   const [previewTokenInput, setPreviewTokenInput] = useState(previewToken ?? '')
-  const { messages, append, reload, stop, isLoading, input, setInput } =
-    useChat({
-      initialMessages,
+  const {
+    messages,
+    append,
+    reload,
+    stop,
+    isLoading,
+    input,
+    setInput,
+  } = useChat({
+    initialMessages,
+    id,
+    body: {
       id,
-      body: {
-        id,
-        previewToken
-      },
-      onResponse(response) {
-        if (response.status === 401) {
-          toast.error(response.statusText)
-        }
-      },
-      onFinish() {
-        if (!path.includes('chat')) {
-          window.history.pushState({}, '', `/chat/${id}`)
-        }
+      previewToken,
+    },
+    onResponse(response) {
+      if (response.status === 401) {
+        toast.error(response.statusText)
       }
-    })
+    },
+    onFinish() {
+      if (!path.includes('chat')) {
+        window.history.pushState({}, '', `/chat/${id}`)
+      }
+    },
+  })
+
+  // Handler for voice input transcript
+  const handleVoiceTranscript = (transcript: string) => {
+    setInput(transcript); // Update the chat input with the transcript
+    // Optionally, directly send the message
+    // append({ id: Date.now().toString(), text: transcript, sender: 'user' });
+  }
+
   return (
     <>
+      <VoiceInput onTranscript={handleVoiceTranscript} />
       <div className={cn('pb-[200px] pt-4 md:pt-10', className)}>
         {messages.length ? (
           <>
@@ -85,13 +100,10 @@ export function Chat({ id, initialMessages, className }: ChatProps) {
             <DialogTitle>Enter your OpenAI Key</DialogTitle>
             <DialogDescription>
               If you have not obtained your OpenAI API key, you can do so by{' '}
-              <a
-                href="https://platform.openai.com/signup/"
-                className="underline"
-              >
+              <a href="https://platform.openai.com/signup/" className="underline">
                 signing up
-              </a>{' '}
-              on the OpenAI website. This is only necessary for preview
+              </a>
+              {' '}on the OpenAI website. This is only necessary for preview
               environments so that the open source community can test the app.
               The token will be saved to your browser&apos;s local storage under
               the name <code className="font-mono">ai-token</code>.
@@ -100,7 +112,7 @@ export function Chat({ id, initialMessages, className }: ChatProps) {
           <Input
             value={previewTokenInput}
             placeholder="OpenAI API key"
-            onChange={e => setPreviewTokenInput(e.target.value)}
+            onChange={(e) => setPreviewTokenInput(e.target.value)}
           />
           <DialogFooter className="items-center">
             <Button

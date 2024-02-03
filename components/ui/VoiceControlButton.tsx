@@ -10,17 +10,6 @@ interface VoiceControlButtonProps {
   setInput: (message: string) => void;
 }
 
-const microphoneIcon = (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="24"
-    height="24"
-    viewBox="0 0 24 24"
-  >
-    <path d="M12 2c-1.657 0-3 1.343-3 3v5h6V5c0-1.657-1.343-3-3-3zM4 8v7c0 3.313 2.687 6 6 6h4c3.313 0 6-2.687 6-6v-7h2c1.104 0 2-.896 2-2v-4c0-1.104-.896-2-2-2H4c-1.104 0-2 .896-2 2v4c0 1.104.896 2 2 2h2zm14-2h-2V5c0-.551-.449-1-1-1s-1 .449-1 1v1H8V5c0-.551-.449-1-1-1s-1 .449-1 1v1H4c-.553 0-1 .447-1 1v4c0 .553.447 1 1 1h2v7c0 2.761 2.239 5 5 5s5-2.239 5-5v-7h2c.553 0 1-.447 1-1v-4c0-.553-.447-1-1-1z" />
-  </svg>
-);
-
 const VoiceControlButton: React.FC<VoiceControlButtonProps> = ({ setInput }) => {
   const [isListening, setIsListening] = useState<boolean>(false);
   const [transcripts, setTranscripts] = useState<string[]>([]);
@@ -107,9 +96,23 @@ const VoiceControlButton: React.FC<VoiceControlButtonProps> = ({ setInput }) => 
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
+          border: 'none',
+          outline: 'none',
+          cursor: 'pointer',
+          padding: '8px',
+          borderRadius: '50%',
         }}
       >
-        {microphoneIcon} {/* Include the microphone icon */}
+        {/* Microphone Icon */}
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+        >
+          <path d="M12 2c-1.657 0-3 1.343-3 3v5h6V5c0-1.657-1.343-3-3-3zM4 8v7c0 3.313 2.687 6 6 6h4c3.313 0 6-2.687 6-6v-7h2c1.104 0 2-.896 2-2v-4c0-1.104-.896-2-2-2H4c-1.104 0-2 .896-2 2v4c0 1.104.896 2 2 2h2zm14-2h-2V5c0-.551-.449-1-1-1s-1 .449-1 1v1H8V5c0-.551-.449-1-1-1s-1 .449-1 1v1H4c-.553 0-1 .447-1 1v4c0 .553.447 1 1 1h2v7c0 2.761 2.239 5 5 5s5-2.239 5-5v-7h2c.553 0 1-.447 1-1v-4c0-.553-.447-1-1-1z" />
+        </svg>
+        {/* End of Microphone Icon */}
       </button>
       {/* Optionally display the accumulated transcripts */}
       <div>{transcripts.join(' ')}</div>
@@ -118,3 +121,4 @@ const VoiceControlButton: React.FC<VoiceControlButtonProps> = ({ setInput }) => 
 };
 
 export default VoiceControlButton;
+

@@ -18,7 +18,7 @@ const VoiceControlButton: React.FC = () => {
     if (!recognition) return;
 
     recognition.onresult = (event: SpeechRecognitionEvent) => {
-      const currentTranscripts = [];
+      const currentTranscripts: string[] = [];
       for (let i = event.resultIndex; i < event.results.length; ++i) {
         currentTranscripts.push(event.results[i][0].transcript);
       }
@@ -68,4 +68,3 @@ const VoiceControlButton: React.FC = () => {
 };
 
 export default VoiceControlButton;
-

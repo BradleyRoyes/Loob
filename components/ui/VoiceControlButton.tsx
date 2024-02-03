@@ -6,7 +6,11 @@ declare global {
   }
 }
 
-const VoiceControlButton: React.FC = () => {
+interface VoiceControlButtonProps {
+  setInput: (message: string) => void;
+}
+
+const VoiceControlButton: React.FC<VoiceControlButtonProps> = ({ setInput }) => {
   const [isListening, setIsListening] = useState<boolean>(false);
   const [transcripts, setTranscripts] = useState<string[]>([]);
 
@@ -38,7 +42,9 @@ const VoiceControlButton: React.FC = () => {
       } else {
         console.log('Voice recognition stopped. Processing results...');
         // Process accumulated transcripts here
-        console.log(transcripts.join(' '));
+        const message = transcripts.join(' ');
+        console.log(message);
+        setInput(message); // Call the setInput prop with the transcribed message
       }
     };
 
@@ -56,7 +62,7 @@ const VoiceControlButton: React.FC = () => {
         recognition.onend = null as any; // Type assertion here
       }
     };
-  }, [recognition, isListening, transcripts]);
+  }, [recognition, isListening, transcripts, setInput]);
 
   const handleStartListening = () => {
     if (!recognition) {

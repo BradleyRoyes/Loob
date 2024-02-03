@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button'
 import { ExternalLink } from '@/components/external-link'
 import { IconArrowRight } from '@/components/ui/icons'
 
-import { VoiceControlButton } from '@/components/ui/VoiceControlButton'; // Import the VoiceControlButton component
+import VoiceControlButton from '@/components/ui/VoiceControlButton'; // Import the VoiceControlButton component
 
 const exampleMessages = [
   {

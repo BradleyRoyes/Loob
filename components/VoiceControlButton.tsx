@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 
 declare global {
   interface Window {
@@ -9,10 +9,17 @@ declare global {
 const VoiceControlButton: React.FC = () => {
   const [isListening, setIsListening] = useState<boolean>(false);
   const [transcripts, setTranscripts] = useState<string[]>([]);
+  
   const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-  const recognition = SpeechRecognition ? new SpeechRecognition() : null;
-
-  recognition && (recognition.continuous = true); // Set continuous to true to keep it listening until manually stopped
+  
+  const recognition = useMemo(() => {
+    if (SpeechRecognition) {
+      const recognitionInstance = new SpeechRecognition();
+      recognitionInstance.continuous = true; // Set continuous to true to keep it listening until manually stopped
+      return recognitionInstance;
+    }
+    return null;
+  }, [SpeechRecognition]);
 
   useEffect(() => {
     if (!recognition) return;

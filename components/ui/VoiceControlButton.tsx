@@ -50,10 +50,10 @@ const VoiceControlButton: React.FC = () => {
     return () => {
       // Cleanup event handlers when component unmounts
       if (recognition.onresult === handleResult) {
-        recognition.onresult = null;
+        recognition.onresult = null as any; // Type assertion here
       }
       if (recognition.onend === handleEnd) {
-        recognition.onend = null;
+        recognition.onend = null as any; // Type assertion here
       }
     };
   }, [recognition, isListening, transcripts]);
@@ -92,4 +92,5 @@ const VoiceControlButton: React.FC = () => {
 };
 
 export default VoiceControlButton;
+
 

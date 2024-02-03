@@ -24,7 +24,7 @@ const VoiceControlButton: React.FC = () => {
   useEffect(() => {
     if (!recognition) return;
 
-    recognition.onresult = (event: SpeechRecognitionEvent) => {
+    const handleResult = (event: SpeechRecognitionEvent) => {
       const currentTranscripts: string[] = [];
       for (let i = event.resultIndex; i < event.results.length; ++i) {
         currentTranscripts.push(event.results[i][0].transcript);
@@ -32,7 +32,7 @@ const VoiceControlButton: React.FC = () => {
       setTranscripts(prevTranscripts => [...prevTranscripts, ...currentTranscripts]);
     };
 
-    recognition.onend = () => {
+    const handleEnd = () => {
       if (isListening) {
         recognition.start(); // Only restart listening if `isListening` is still true
       } else {
@@ -42,7 +42,16 @@ const VoiceControlButton: React.FC = () => {
       }
     };
 
+    recognition.onresult = handleResult;
+    recognition.onend = handleEnd;
+
     // Other event handlers...
+
+    return () => {
+      // Cleanup event handlers when component unmounts
+      recognition.onresult = null;
+      recognition.onend = null;
+    };
   }, [recognition, isListening, transcripts]);
 
   const handleStartListening = () => {

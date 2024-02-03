@@ -9,9 +9,9 @@ declare global {
 const VoiceControlButton: React.FC = () => {
   const [isListening, setIsListening] = useState<boolean>(false);
   const [transcripts, setTranscripts] = useState<string[]>([]);
-  
+
   const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-  
+
   const recognition = useMemo(() => {
     if (SpeechRecognition) {
       const recognitionInstance = new SpeechRecognition();
@@ -29,7 +29,7 @@ const VoiceControlButton: React.FC = () => {
       for (let i = event.resultIndex; i < event.results.length; ++i) {
         currentTranscripts.push(event.results[i][0].transcript);
       }
-      setTranscripts(prevTranscripts => [...prevTranscripts, ...currentTranscripts]);
+      setTranscripts((prevTranscripts) => [...prevTranscripts, ...currentTranscripts]);
     };
 
     const handleEnd = () => {
@@ -49,8 +49,12 @@ const VoiceControlButton: React.FC = () => {
 
     return () => {
       // Cleanup event handlers when component unmounts
-      recognition.onresult = null;
-      recognition.onend = null;
+      if (recognition.onresult === handleResult) {
+        recognition.onresult = null;
+      }
+      if (recognition.onend === handleEnd) {
+        recognition.onend = null;
+      }
     };
   }, [recognition, isListening, transcripts]);
 
@@ -75,8 +79,12 @@ const VoiceControlButton: React.FC = () => {
 
   return (
     <div>
-      <button onClick={handleStartListening} disabled={isListening}>Start Listening</button>
-      <button onClick={handleStopListening} disabled={!isListening}>Stop Listening</button>
+      <button onClick={handleStartListening} disabled={isListening}>
+        Start Listening
+      </button>
+      <button onClick={handleStopListening} disabled={!isListening}>
+        Stop Listening
+      </button>
       {/* Optionally display the accumulated transcripts */}
       <div>{transcripts.join(' ')}</div>
     </div>
@@ -84,3 +92,4 @@ const VoiceControlButton: React.FC = () => {
 };
 
 export default VoiceControlButton;
+

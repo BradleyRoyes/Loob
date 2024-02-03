@@ -118,4 +118,3 @@ const VoiceControlButton: React.FC<VoiceControlButtonProps> = ({ setInput }) => 
 };
 
 export default VoiceControlButton;
-

@@ -7,6 +7,7 @@ import { cn } from '@/lib/utils'
 import { TailwindIndicator } from '@/components/tailwind-indicator'
 import { Providers } from '@/components/providers'
 import { Header } from '@/components/header'
+import ThreeVisual from '@/components/ThreeVisual' // Add this line to import your visual component
 
 export const metadata = {
   metadataBase: new URL(`https://${process.env.VERCEL_URL}`),
@@ -52,7 +53,12 @@ export default function RootLayout({ children }: RootLayoutProps) {
         >
           <div className="flex flex-col min-h-screen">
             <Header />
-            <main className="flex flex-col flex-1 bg-muted/50">{children}</main>
+            <main className="flex flex-col flex-1 bg-muted/50 relative">
+              {children}
+              <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full max-w-4xl h-96">
+                <ThreeVisual />
+              </div>
+            </main>
           </div>
           <TailwindIndicator />
         </Providers>
